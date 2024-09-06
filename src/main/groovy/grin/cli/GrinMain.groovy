@@ -6,7 +6,7 @@ import grin.app.GrinApplication
  * Grin 入口
  * 启动服务器，执行命令等。
  */
-class Main {
+class GrinMain {
     // 支持的命令
     static cmds = [
             'init'             : ['init grin dirs'],
