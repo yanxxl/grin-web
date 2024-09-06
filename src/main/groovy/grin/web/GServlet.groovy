@@ -1,6 +1,6 @@
 package grin.web
 
-import grin.app.App
+import grin.app.GrinApplication
 import groovy.util.logging.Slf4j
 
 import javax.servlet.GenericServlet
@@ -13,10 +13,10 @@ import java.lang.reflect.Method
 
 @Slf4j
 class GServlet extends GenericServlet {
-    App app
+    GrinApplication app
 
     void init() {
-        app = App.instance
+        app = GrinApplication.instance
     }
 
     @Override

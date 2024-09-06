@@ -1,6 +1,6 @@
 package grin.web
 
-import grin.app.App
+import grin.app.GrinApplication
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.WebContext
 import org.thymeleaf.templateresolver.FileTemplateResolver
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse
 class Template {
     TemplateEngine templateEngine
 
-    Template(App app) {
+    Template(GrinApplication app) {
         templateEngine = new TemplateEngine()
         FileTemplateResolver resolver = new FileTemplateResolver()
         resolver.setPrefix(app.viewsDir.canonicalPath)

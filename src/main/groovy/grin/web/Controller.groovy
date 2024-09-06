@@ -1,6 +1,6 @@
 package grin.web
 
-import grin.app.App
+import grin.app.GrinApplication
 import groovy.json.JsonSlurper
 import groovy.json.StreamingJsonBuilder
 import groovy.util.logging.Slf4j
@@ -27,7 +27,7 @@ class Controller {
     Params params
 
     // app
-    App app = App.instance
+    GrinApplication app = GrinApplication.instance
     // json
     private StreamingJsonBuilder _json
 

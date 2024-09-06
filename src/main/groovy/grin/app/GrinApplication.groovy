@@ -24,7 +24,7 @@ import java.lang.reflect.Method
  * 定义规约目录等。
  */
 @Slf4j
-class App {
+class GrinApplication {
     // env
     public static final String ENV_PROD = 'prod'
     public static final String ENV_DEV = 'dev'
@@ -49,7 +49,7 @@ class App {
     ConfigObject config
 
     // 一些延迟初始化的属性
-    private static App _instance
+    private static GrinApplication _instance
     private GroovyScriptEngine _scriptEngine
     private JsonGenerator _jsonGenerator
     private Template _template
@@ -65,7 +65,7 @@ class App {
      * 构造并初始化
      * @param projectRoot
      */
-    private App(File projectRoot = null, String env = null) {
+    private GrinApplication(File projectRoot = null, String env = null) {
         // init dirs
         projectDir = projectRoot ?: new File('.').getCanonicalFile()
         appDir = new File(projectDir, APP_DIR)
@@ -94,16 +94,16 @@ class App {
      */
     static init(File root = null, String env = null) {
         if (_instance) throw new Exception("Grin app has inited")
-        _instance = new App(root, env)
+        _instance = new GrinApplication(root, env)
     }
 
     /**
      * 获取单例
      * @return
      */
-    synchronized static App getInstance() {
+    synchronized static GrinApplication getInstance() {
         if (_instance) return _instance
-        _instance = new App()
+        _instance = new GrinApplication()
         return _instance
     }
 

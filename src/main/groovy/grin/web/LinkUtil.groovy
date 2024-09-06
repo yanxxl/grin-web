@@ -1,9 +1,9 @@
 package grin.web
 
 
-import grin.app.App;
+import grin.app.GrinApplication
 
-public class LinkUtil {
+class LinkUtil {
 
     /**
      * 获取文件的绝对路径
@@ -12,7 +12,7 @@ public class LinkUtil {
      */
     static String absolute(String file) {
         if (file && !(file.startsWith('http://') || file.startsWith('https://'))) {
-            return App.instance.config.serverURL + file
+            return GrinApplication.instance.config.serverURL + file
         } else {
             return file
         }

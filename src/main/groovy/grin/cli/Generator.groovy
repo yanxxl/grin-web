@@ -1,6 +1,6 @@
 package grin.cli
 
-import grin.app.App
+import grin.app.GrinApplication
 import groovy.text.StreamingTemplateEngine
 import groovy.text.Template
 import groovy.util.logging.Slf4j
@@ -19,7 +19,7 @@ class Generator {
      */
     static createDomain(String className) {
         File template = new File(templateDir, 'domain')
-        File target = new File(App.instance.domainsDir, ClassUtils.classPath(className) + '.groovy')
+        File target = new File(GrinApplication.instance.domainsDir, ClassUtils.classPath(className) + '.groovy')
         generate(template, target, ClassUtils.toMap(className))
     }
 
@@ -106,7 +106,7 @@ class Generator {
      * @return
      */
     static File getTemplateDir() {
-        new File(App.instance.appDir, 'templates')
+        new File(GrinApplication.instance.appDir, 'templates')
     }
 
     /**
@@ -122,7 +122,7 @@ class Generator {
      * @return
      */
     static File getViewsDir() {
-        App.instance.viewsDir
+        GrinApplication.instance.viewsDir
     }
 
     /**
@@ -130,6 +130,6 @@ class Generator {
      * @return
      */
     static File getControllersDir() {
-        App.instance.controllersDir
+        GrinApplication.instance.controllersDir
     }
 }

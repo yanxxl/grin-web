@@ -1,6 +1,6 @@
 package grin.web
 
-import grin.app.App
+import grin.app.GrinApplication
 import groovy.util.logging.Slf4j
 
 import javax.servlet.http.HttpServletRequest
@@ -41,7 +41,7 @@ class Interceptor {
         if (status >= 500) exception.printStackTrace()
         response.status = status
         def accept = request.getHeader('Accept')
-        App app = App.instance
+        GrinApplication app = GrinApplication.instance
         if (accept?.contains('json')) {
             app.getJson(response)([success: false, message: message])
         } else {

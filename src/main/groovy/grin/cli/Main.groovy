@@ -1,6 +1,6 @@
 package grin.cli
 
-import grin.app.App
+import grin.app.GrinApplication
 
 /**
  * Grin 入口
@@ -68,7 +68,7 @@ class Main {
 
         //init
         if (cmd == 'init') {
-            App.instance.initDirs()
+            GrinApplication.instance.initDirs()
         }
 
         //create domain
@@ -100,7 +100,7 @@ class Main {
             mustOrFail args.size() > 1, "缺少类名"
             String script = args[1].endsWith('.groovy') ? args[1] : args[1] + '.groovy'
             def start = System.currentTimeMillis()
-            App.instance.scriptEngine.run(script, '')
+            GrinApplication.instance.scriptEngine.run(script, '')
             println("Run script ${script},use time ${(System.currentTimeMillis() - start) / 1000}s.")
         }
     }
