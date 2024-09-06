@@ -1,6 +1,7 @@
 package grin.web
 
 import grin.app.GrinApplication
+import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
 
 import javax.servlet.http.HttpServletRequest
@@ -32,6 +33,7 @@ class Interceptor {
 
     /**
      * 处理异常
+     * 曾经想把异常处理放到控制器里实现，但这会带来一个问题，当控制器不存在的时候，没法执行了。只能放在这里了。似乎之前也是因为这个问题挪到这里的。
      */
     void dealException(HttpServletRequest request, HttpServletResponse response, Exception exception) {
         if (exception instanceof InvocationTargetException) exception = exception.getTargetException()
@@ -43,7 +45,8 @@ class Interceptor {
         def accept = request.getHeader('Accept')
         GrinApplication app = GrinApplication.instance
         if (accept?.contains('json')) {
-            app.getJson(response)([success: false, message: message])
+            response.setHeader("Content-Type", "application/json;charset=UTF-8")
+            response.getWriter().write(JsonOutput.toJson([success: false, message: message]))
         } else {
             String view = status == 404 ? app.config.views.notFound : app.config.views.error
             app.template.render(request, response, view, [exception: exception, message: message])
