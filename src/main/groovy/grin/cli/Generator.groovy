@@ -1,4 +1,4 @@
-package grin.generate
+package grin.cli
 
 import grin.app.App
 import groovy.text.StreamingTemplateEngine

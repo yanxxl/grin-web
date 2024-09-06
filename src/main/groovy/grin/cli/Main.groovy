@@ -1,6 +1,6 @@
-package grin.app
+package grin.cli
 
-import grin.generate.Generator
+import grin.app.App
 
 /**
  * Grin 入口
@@ -47,7 +47,7 @@ class Main {
      * Main
      * @param args
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
 
         if (!args) {
             Scanner scanner = new Scanner(System.in)

@@ -1,4 +1,4 @@
-package grin.generate
+package grin.cli
 
 class ClassUtils {
 

@@ -1,4 +1,4 @@
-package grin.generate
+package grin.cli
 
 import grin.datastore.Entity
 import grin.datastore.Utils
