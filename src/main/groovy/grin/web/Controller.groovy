@@ -35,6 +35,10 @@ class Controller {
     String actionName
     String id
 
+    // 已经输出标志
+    // 当方法里面手动输出后，标记为 true，后续再有 return 数据时，不输出，但警告一下。
+    boolean alreadyWrite = false
+
     /**
      * 初始化数据
      */
@@ -152,6 +156,7 @@ class Controller {
      * @return
      */
     StreamingJsonBuilder getJsonBuilder() {
+        alreadyWrite = true
         return new StreamingJsonBuilder(response.getWriter(), getJsonGenerator())
     }
 
@@ -160,15 +165,8 @@ class Controller {
      * @return
      */
     MarkupBuilder getHtmlBuilder() {
+        alreadyWrite = true
         new MarkupBuilder(response.getWriter())
-    }
-
-    /**
-     * ThymeleafTemplate
-     * @return
-     */
-    ThymeleafTemplate getTemplate() {
-        return app.template
     }
 
     /**
@@ -176,6 +174,7 @@ class Controller {
      * @param string
      */
     void render(String string) {
+        alreadyWrite = true
         response.getWriter().write(string)
     }
 
@@ -185,6 +184,7 @@ class Controller {
      * @param bytes
      */
     void render(byte[] bytes) {
+        alreadyWrite = true
         response.reset()
         response.getOutputStream().write(bytes)
     }
@@ -194,6 +194,7 @@ class Controller {
      * @param o
      */
     void render(Object o) {
+        alreadyWrite = true
         response.getWriter().write(o.toString())
     }
 
@@ -204,7 +205,8 @@ class Controller {
      * @param model
      */
     void render(String view, Map model) {
-        template.render(this, view, model)
+        alreadyWrite = true
+        app.template.render(this, view, model)
     }
 
     /**
@@ -214,7 +216,25 @@ class Controller {
      * @param cacheTime 默认 86400 秒 一天
      */
     void render(File file, int cacheTime = 86400) {
+        alreadyWrite = true
         response.reset()
         FileUtils.serveFile(request, response, file, cacheTime)
+    }
+
+    /**
+     * 处理 return 结果
+     * 在控制器里定义的方法里，可以直接调用上面的输出内容，也可以直接 return 来输出，这里就处理这个。
+     * 当已经手动输出之后，不再处理返回内容，若有返回内容，输出一条警告日志，用来提醒开发者。
+     * 因为 groovy 默认最后一行也是返回代码，可能会有各种各样的对象。所以，限定返回内容为 字符串，Map，Entity，其他就不做处理了。
+     * @param result
+     */
+    void dealResult(Object result) {
+        if (result == null) return
+        if (alreadyWrite) {
+            log.warn("请求已经返回了数据，方法里又返回了数据。")
+            return
+        }
+        if (result instanceof String) render(result)
+        if (result instanceof Map || result instanceof Entity) jsonBuilder(result)
     }
 }

@@ -1,7 +1,6 @@
 package grin.web
 
 import grin.app.GrinApplication
-import grin.datastore.Entity
 import groovy.util.logging.Slf4j
 
 import javax.servlet.GenericServlet
@@ -61,9 +60,7 @@ class GServlet extends GenericServlet {
 
                 if (!app.interceptor.before(request, response, controllerName, actionName)) return
                 controller.init(request, response, controllerName, actionName, route.id, pathParams)
-                def result = method.invoke(controller)
-                // 返回结果如果是 map 或者 entity，使用 json，否则，render。
-                if (result != null) (result instanceof Map || result instanceof Entity) ? controller.jsonBuilder(result) : controller.render(result)
+                controller.dealResult(method.invoke(controller))
                 app.interceptor.after(request, response, controllerName, actionName)
             } catch (Exception e) {
                 app.interceptor.dealException(req, res, e)
