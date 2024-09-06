@@ -7,16 +7,12 @@ import com.alibaba.druid.pool.DruidDataSource
 import com.alibaba.druid.sql.SQLUtils
 import grin.datastore.DB
 import grin.datastore.DDL
-import grin.datastore.Entity
 import grin.web.Interceptor
 import grin.web.Route
-import grin.web.Template
+import grin.web.ThymeleafTemplate
 import grin.web.WebUtils
-import groovy.json.JsonGenerator
-import groovy.json.StreamingJsonBuilder
 import groovy.util.logging.Slf4j
 
-import javax.servlet.http.HttpServletResponse
 import java.lang.reflect.Method
 
 /**
@@ -51,8 +47,7 @@ class GrinApplication {
     // 一些延迟初始化的属性
     private static GrinApplication _instance
     private GroovyScriptEngine _scriptEngine
-    private JsonGenerator _jsonGenerator
-    private Template _template
+    private ThymeleafTemplate _template
 
     // web 组件
     Map<String, String> controllers = [:]
@@ -187,32 +182,12 @@ class GrinApplication {
     }
 
     /**
-     * json generator
-     * @return
-     */
-    synchronized JsonGenerator getJsonGenerator() {
-        if (_jsonGenerator) return _jsonGenerator
-        _jsonGenerator = new groovy.json.JsonGenerator.Options()
-                .addConverter(Date) { Date date ->
-                    date.format(instance.config.json.dateFormat ?: 'yyyy-MM-dd HH:mm:ss')
-                }
-                .addConverter(Entity) { it.toMap() }
-                .build()
-        return _jsonGenerator
-    }
-
-    StreamingJsonBuilder getJson(HttpServletResponse response) {
-        response.setHeader("Content-Type", "application/json;charset=UTF-8")
-        return new StreamingJsonBuilder(response.getWriter(), getJsonGenerator())
-    }
-
-    /**
      * 模板引擎
      * @return
      */
-    synchronized Template getTemplate() {
+    synchronized ThymeleafTemplate getTemplate() {
         if (_template) return _template
-        _template = new Template(this)
+        _template = new ThymeleafTemplate(this)
         return _template
     }
 }

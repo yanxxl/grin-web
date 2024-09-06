@@ -1,6 +1,8 @@
 package grin.web
 
 import grin.app.GrinApplication
+import grin.datastore.Entity
+import groovy.json.JsonGenerator
 import groovy.json.JsonSlurper
 import groovy.json.StreamingJsonBuilder
 import groovy.util.logging.Slf4j
@@ -19,7 +21,6 @@ import javax.servlet.http.HttpSession
  */
 @Slf4j
 class Controller {
-    static int ONE_DAY = 24 * 60 * 60 // second
     // servlet
     HttpServletRequest request
     HttpServletResponse response
@@ -28,8 +29,6 @@ class Controller {
 
     // app
     GrinApplication app = GrinApplication.instance
-    // json
-    private StreamingJsonBuilder _json
 
     // 控制器三大要素
     String controllerName
@@ -136,11 +135,58 @@ class Controller {
     }
 
     /**
+     * json generator
+     * @return
+     */
+    JsonGenerator getJsonGenerator() {
+        response.setHeader("Content-Type", "application/json;charset=UTF-8")
+        def jsonGenerator = new groovy.json.JsonGenerator.Options()
+                .addConverter(Entity) { it.toMap() }
+                .build()
+        return jsonGenerator
+    }
+
+    /**
+     * json builder
+     * @param response
+     * @return
+     */
+    StreamingJsonBuilder getJsonBuilder() {
+        return new StreamingJsonBuilder(response.getWriter(), getJsonGenerator())
+    }
+
+    /**
+     * html builder
+     * @return
+     */
+    MarkupBuilder getHtmlBuilder() {
+        new MarkupBuilder(response.getWriter())
+    }
+
+    /**
+     * ThymeleafTemplate
+     * @return
+     */
+    ThymeleafTemplate getTemplate() {
+        return app.template
+    }
+
+    /**
      * 返回string
      * @param string
      */
     void render(String string) {
         response.getWriter().write(string)
+    }
+
+    /**
+     * bytes
+     * 无缓存，直接返回
+     * @param bytes
+     */
+    void render(byte[] bytes) {
+        response.reset()
+        response.getOutputStream().write(bytes)
     }
 
     /**
@@ -158,74 +204,17 @@ class Controller {
      * @param model
      */
     void render(String view, Map model) {
-        app.template.render(this, view, model)
-    }
-
-    /**
-     * bytes
-     * 无缓存，直接返回
-     * @param bytes
-     */
-    void render(byte[] bytes) {
-        response.reset()
-        response.getOutputStream().write(bytes)
+        template.render(this, view, model)
     }
 
     /**
      * 文件处理
      * 开启了断点续传，缓存等。
      * @param file
-     * @param cacheTime
+     * @param cacheTime 默认 86400 秒 一天
      */
-    void render(File file, int cacheTime = ONE_DAY) {
+    void render(File file, int cacheTime = 86400) {
         response.reset()
         FileUtils.serveFile(request, response, file, cacheTime)
-    }
-
-    /**
-     * json builder
-     * @return
-     */
-    private StreamingJsonBuilder getJson() {
-        response.reset()
-        if (_json) throw new HttpException(500, "服务器内部错误，不能重复调用 json()")
-        _json = app.getJson(response)
-        return _json
-    }
-
-    // json相关的方法
-    void json(Map m) { getJson()(m) }
-
-    void json(String name) { getJson()(name) }
-
-    void json(List l) { getJson()(l) }
-
-    void json(Object... args) { getJson()(args) }
-
-    void json(Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(coll, c) }
-
-    void json(Collection coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(coll, c) }
-
-    void json(@DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(c) }
-
-    void json(String name, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(name, c) }
-
-    void json(String name, Iterable coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(name, coll, c) }
-
-    void json(String name, Collection coll, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure c) { getJson()(name, coll, c) }
-
-    void json(String name, Map map, @DelegatesTo(StreamingJsonBuilder.StreamingJsonDelegate.class) Closure callable) { getJson()(name, map, callable) }
-
-    void success(String message, Map data = null) { json(data ? [success: true, message: message, data: data] : [success: true, message: message]) }
-
-    void fail(String message, Map errors = null) { json(errors ? [success: false, message: message, errors: errors] : [success: true, message: message]) }
-
-    /**
-     * html builder
-     * 这里貌似也该限制只调用一次，但，第一次调用就向客户端提交了数据，抛出异常，无法正常显示异常信息。索性也就不限制了。
-     * @return
-     */
-    MarkupBuilder getHtmlBuilder() {
-        new MarkupBuilder(response.getWriter())
     }
 }

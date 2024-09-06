@@ -11,10 +11,10 @@ import javax.servlet.http.HttpServletResponse
 /**
  * 模板
  */
-class Template {
+class ThymeleafTemplate {
     TemplateEngine templateEngine
 
-    Template(GrinApplication app) {
+    ThymeleafTemplate(GrinApplication app) {
         templateEngine = new TemplateEngine()
         FileTemplateResolver resolver = new FileTemplateResolver()
         resolver.setPrefix(app.viewsDir.canonicalPath)
