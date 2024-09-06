@@ -60,7 +60,7 @@ class GServlet extends GenericServlet {
 
                 if (!app.interceptor.before(request, response, controllerName, actionName)) return
                 controller.init(request, response, controllerName, actionName, route.id, pathParams)
-                controller.dealResult(method.invoke(controller))
+                method.invoke(controller)
                 app.interceptor.after(request, response, controllerName, actionName)
             } catch (Exception e) {
                 app.interceptor.dealException(req, res, e)
