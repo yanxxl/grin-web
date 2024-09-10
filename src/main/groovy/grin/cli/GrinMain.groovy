@@ -68,7 +68,7 @@ class GrinMain {
 
         //init
         if (cmd == 'init') {
-            GrinApplication.instance.initDirs()
+            GrinApplication.init(this).initDirs()
         }
 
         //create domain

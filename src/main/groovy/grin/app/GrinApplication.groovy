@@ -93,8 +93,8 @@ class GrinApplication {
     static GrinApplication init(Object app, String env = null) {
         if (_instance) throw new Exception("Grin app has initialized")
         // 如果运行在 jar 模式下，将项目文件放到一个文件夹下
-        String jarPath = app.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
-        if (jarPath.endsWith('.jar')) {
+        String jarPath = app.class.getProtectionDomain().getCodeSource()?.getLocation()?.toURI()?.getPath()
+        if (jarPath?.endsWith('.jar')) {
             File rootDir = File.createTempDir()
             new JarFile(jarPath).entries().each {
                 if (it.name.startsWith(APP_DIR)) {
