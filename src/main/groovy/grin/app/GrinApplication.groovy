@@ -14,6 +14,7 @@ import grin.web.WebUtils
 import groovy.util.logging.Slf4j
 
 import java.lang.reflect.Method
+import java.util.jar.JarFile
 
 /**
  * Grin App
@@ -60,9 +61,11 @@ class GrinApplication {
      * 构造并初始化
      * @param projectRoot
      */
-    private GrinApplication(File projectRoot = null, String env = null) {
-        // init dirs
-        projectDir = projectRoot ?: new File('.').getCanonicalFile()
+    private GrinApplication(File projectRoot, String env) {
+        projectDir = projectRoot
+        environment = env
+        if (!(environment in GRIN_ENV_LIST)) throw new Exception("错误的运行环境值：${environment}，值必须是 ${GRIN_ENV_LIST} 之一。")
+
         appDir = new File(projectDir, APP_DIR)
         domainsDir = new File(appDir, APP_DOMAINS)
         controllersDir = new File(appDir, APP_CONTROLLERS)
@@ -74,22 +77,39 @@ class GrinApplication {
         staticDir = new File(appDir, APP_STATIC)
         scriptDir = new File(appDir, APP_SCRIPTS)
         allDirs = [appDir, domainsDir, controllersDir, websocketsDir, viewsDir, configDir, initDir, assetDir, staticDir, scriptDir]
-        // env
-        environment = (env ?: System.getenv(GRIN_ENV_NAME)) ?: ENV_DEV
-        if (!(environment in GRIN_ENV_LIST)) throw new Exception("错误的运行环境值：${environment}，值必须是 ${GRIN_ENV_LIST} 之一。")
+
         // config
         config = loadConfig()
         log.info("start app @ ${projectDir.absolutePath} ${environment} ...")
     }
 
     /**
-     * 设置根路径，并初始化。重复会有异常。
+     * 初始化 APP
+     * 在项目运行的主程序中调用
+     * @param app 根据这个判断是否在 jar 中运行。如果在 jar 中，要从 jar 里读出 grin-app,并放到某个文件夹中去
      * @param root
      * @return
      */
-    static init(File root = null, String env = null) {
-        if (_instance) throw new Exception("Grin app has inited")
-        _instance = new GrinApplication(root, env)
+    static GrinApplication init(Object app, String env = null) {
+        if (_instance) throw new Exception("Grin app has initialized")
+        // 如果运行在 jar 模式下，将项目文件放到一个文件夹下
+        String jarPath = app.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath()
+        if (jarPath.endsWith('.jar')) {
+            File rootDir = File.createTempDir()
+            new JarFile(jarPath).entries().each {
+                if (it.name.startsWith(APP_DIR)) {
+                    if (it.isDirectory()) {
+                        new File(rootDir, it.name).mkdir()
+                    } else {
+                        new File(rootDir, it.name) << app.class.getResourceAsStream(it.name)
+                    }
+                }
+            }
+            _instance = new GrinApplication(rootDir, (env ?: System.getenv(GRIN_ENV_NAME)) ?: ENV_PROD)
+        } else {
+            _instance = new GrinApplication(new File('.').canonicalFile, (env ?: System.getenv(GRIN_ENV_NAME)) ?: ENV_DEV)
+        }
+        return _instance
     }
 
     /**
@@ -97,8 +117,7 @@ class GrinApplication {
      * @return
      */
     synchronized static GrinApplication getInstance() {
-        if (_instance) return _instance
-        _instance = new GrinApplication()
+        if (!_instance) throw new Exception("没有调用 init 方法初始化！")
         return _instance
     }
 
