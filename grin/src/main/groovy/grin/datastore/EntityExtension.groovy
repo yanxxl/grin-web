@@ -8,7 +8,7 @@ class EntityExtension {
      * @param list
      * @param names
      */
-    public static void fetch(List<? extends Entity> list, String... names) {
+    static void fetch(List<? extends Entity> list, String... names) {
         EntityFetch.fetchList(list, names)
     }
 }

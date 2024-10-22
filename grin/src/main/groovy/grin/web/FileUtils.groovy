@@ -78,47 +78,47 @@ class FileUtils {
         response.setContentType(request.getServletContext().getMimeType(request.requestURI))
         response.setHeader("ETag", etag)
         response.setHeader('Cache-Control', 'public, max-age=' + cacheTime)
-        response.setHeader("Content-Disposition", "attachment;filename=\" " + target.getName() + " \"");
+        response.setHeader("Content-Disposition", "attachment;filename=\" " + target.getName() + " \"")
 
         OutputStream out = response.getOutputStream()
         try {
-            FileInputStream fis = new FileInputStream(target);
+            FileInputStream fis = new FileInputStream(target)
 
-            long start = 0, end = 0;
-            long fileLength = target.length();
+            long start = 0, end = 0
+            long fileLength = target.length()
 
             if (request.getHeader("Range") != null) {
                 response.setHeader("Accept-Ranges", "bytes") //通过修改nginx 配置文件生效了。可能不是这里的原因。
-                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);//206  默认是 200，不用专门设置
+                response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT)//206  默认是 200，不用专门设置
 
                 def ranges = request.getHeader("Range").replaceAll("bytes=", "").split('-')
                 start = ranges[0].toLong()
                 end = ranges.size() == 2 ? ranges[1].toLong() : 0
 
-                response.setHeader("Content-Range", "bytes ${start}-${end > 0 ? end : fileLength - 1}/${fileLength}");
+                response.setHeader("Content-Range", "bytes ${start}-${end > 0 ? end : fileLength - 1}/${fileLength}")
             }
 
             long contentLength = end > 0 ? end + 1 - start : fileLength - start
-            response.setHeader("Content-Length", "${contentLength}");
+            response.setHeader("Content-Length", "${contentLength}")
             //log.info("file download ${start}-${end} , content length ${contentLength}")
 
-            byte[] buffer = new byte[1024];
-            int needSize = contentLength;
+            byte[] buffer = new byte[1024]
+            int needSize = contentLength
             fis.skip(start)
             while (needSize > 0) {
-                int len = fis.read(buffer);
+                int len = fis.read(buffer)
                 if (needSize < buffer.length) {
-                    out.write(buffer, 0, needSize);
+                    out.write(buffer, 0, needSize)
                 } else {
-                    out.write(buffer, 0, len);
+                    out.write(buffer, 0, len)
                     if (len < buffer.length) { //最后一波
-                        break;
+                        break
                     }
                 }
-                needSize -= buffer.length;
+                needSize -= buffer.length
             }
 
-            fis.close();
+            fis.close()
         } catch (Exception e) {
             log.warn "Exception when request: ${request.requestURI} , file: ${target.absolutePath},$e"
         } finally {
