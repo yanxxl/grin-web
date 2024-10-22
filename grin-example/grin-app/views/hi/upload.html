@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>上传文件</title>
+</head>
+
+<body>
+<h1 class="h2 mb-4">上传文件</h1>
+<form action="/files/upload" enctype="multipart/form-data" method="post">
+    <div class="mb-3">
+        <label class="form-label" for="formFile">Default file input example</label>
+        <input class="form-control" id="formFile" name="file" type="file">
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+</body>
+</html>

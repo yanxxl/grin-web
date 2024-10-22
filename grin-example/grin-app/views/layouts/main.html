@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html th:fragment="layout (head,content)" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+    <th:block th:replace="${head}"/>
+    <link href="/files/assets/stylesheets/bootstrap.css" rel="stylesheet">
+    <link href="/files/assets/stylesheets/application.css" rel="stylesheet">
+    <link href="/files/assets/images/favicon.ico" rel="icon">
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header class="navbar navbar-expand-md navbar-dark bg-primary mb-4" style="padding: 0.75rem 0">
+    <div class="container">
+        <a class="navbar-brand" href="#">Grin Example Project</a>
+        <button aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbarNavAltMarkup" data-bs-toggle="collapse"
+                type="button">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ms-auto">
+                <a href="/" th:class="${controllerName=='home'} ? 'nav-link active' : 'nav-link'">首页</a>
+                <a href="/book/index" th:class="${controllerName=='book'} ? 'nav-link active' : 'nav-link'">图书</a>
+                <a href="/author/index" th:class="${controllerName=='author'} ? 'nav-link active' : 'nav-link'">作者</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="mb-4">
+    <div class="container" th:insert="${content}"></div>
+</main>
+<footer class="mt-auto bg-light py-5">
+    <div class="container small text-secondary">
+        <span>&copy; 2023</span>
+        <a class="float-end" href="#">回页首</a>
+    </div>
+</footer>
+<script src="/files/assets/javascripts/bootstrap.bundle.js"></script>
+<script src="/files/assets/javascripts/application.js"></script>
+</body>
+</html>

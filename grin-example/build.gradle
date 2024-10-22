@@ -1,0 +1,87 @@
+plugins {
+    id 'groovy'
+    id 'application'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+group 'xyz.itbang'
+version '0.1'
+
+sourceCompatibility = 1.8
+mainClassName = "Application"
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public' }
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':grin') // 如果这里报错，就注释掉，然后取消下一行的注释。这是为了方便测试 grin 而设的。
+    // implementation fileTree(dir: 'libs', include: '*.jar')
+    implementation 'org.codehaus.groovy:groovy-all:3.0.13'
+    implementation 'io.undertow:undertow-servlet:2.2.21.Final'
+    implementation 'io.undertow:undertow-websockets-jsr:2.2.21.Final'
+    implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
+
+    implementation 'com.alibaba:druid:1.2.15'
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+
+    runtimeOnly 'org.postgresql:postgresql:42.5.1'
+    runtimeOnly 'com.h2database:h2:2.1.214'
+    runtimeOnly 'org.slf4j:slf4j-api:2.0.5'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.3.5' // 这个暂时不能升级，更新版本就是高于 jdk8 编译了。
+
+    testImplementation 'junit:junit:4.13.2'
+}
+
+// ---  grin ---
+sourceSets {
+    main {
+        groovy {
+            srcDir "grin-app/domains"
+            srcDir "grin-app/controllers"
+            srcDir "grin-app/websockets"
+            srcDir "grin-app/views"
+            srcDir "grin-app/scripts"
+            srcDir "grin-app/init"
+        }
+        resources {
+            srcDir "grin-app/conf"
+        }
+    }
+}
+
+// 运行 grin 提供的内部命令
+// 可以通过这种方式传递参数 ./gradlew grin --args "init"
+task grin(type: JavaExec) {
+    group 'grin'
+    setStandardInput(System.in)
+    jvmArgs('-Dfile.encoding=UTF-8')
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'grin.cli.GrinMain'
+}
+
+// 部署运行准备，把编译后的文件，放到特定文件夹下
+task prepare(type: Copy) {
+    group 'grin'
+    dependsOn classes
+    into "$buildDir/grin"
+    from sourceSets.main.runtimeClasspath
+}
+
+// 复制 grin 框架类库过来
+task copyLibs(type: Copy) {
+    group 'grin'
+    from '/Users/yan/projects/grin-dev/grin/build/libs/'
+    into "libs"
+}
+
+// 打包可执行 Jar 文件
+shadowJar {
+    // 将 grin-app 下的内容打包到 jar。
+    // Jar 里的方法都有些诡异，不是直觉上的对文件夹的操作，而是对内部文件的处理。
+    into('grin-app') {
+        from('grin-app')
+    }
+}
+// --- grin ---

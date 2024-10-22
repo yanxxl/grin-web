@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>show book</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1>show book</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-sm btn-outline-secondary" href="edit" th:href="|../edit/${book.id}|"> 修改 </a>
+        <a class="btn btn-sm btn-outline-secondary ms-3" href="delete" th:href="|../delete/${book.id}|"> 删除 </a>
+    </div>
+</div>
+<p><span>id</span> : <span class="ms-3" th:text="${book.id}">PropertyValue</span></p>
+<p><span>author</span> : <span class="ms-3" th:text="${book.author}">PropertyValue</span></p>
+<p><span>title</span> : <span class="ms-3" th:text="${book.title}">PropertyValue</span></p>
+<p><span>description</span> : <span class="ms-3" th:text="${book.description}">PropertyValue</span></p>
+<p><span>pageCount</span> : <span class="ms-3" th:text="${book.pageCount}">PropertyValue</span></p>
+<p><span>wordCount</span> : <span class="ms-3" th:text="${book.wordCount}">PropertyValue</span></p>
+<p><span>weight</span> : <span class="ms-3" th:text="${book.weight}">PropertyValue</span></p>
+<p><span>weightDouble</span> : <span class="ms-3" th:text="${book.weightDouble}">PropertyValue</span></p>
+<p><span>price</span> : <span class="ms-3" th:text="${book.price}">PropertyValue</span></p>
+<p><span>forPeople</span> : <span class="ms-3" th:text="${book.forPeople}">PropertyValue</span></p>
+<p><span>publishAt</span> : <span class="ms-3" th:text="${book.publishAt}">PropertyValue</span></p>
+<p><span>tags</span> : <span class="ms-3" th:text="${book.tags}">PropertyValue</span></p>
+<p><span>metaData</span> : <span class="ms-3" th:text="${book.metaData}">PropertyValue</span></p>
+<p><span>datePublished</span> : <span class="ms-3" th:text="${book.datePublished}">PropertyValue</span></p>
+<p><span>timePublished</span> : <span class="ms-3" th:text="${book.timePublished}">PropertyValue</span></p>
+<p><span>dateCreated</span> : <span class="ms-3" th:text="${book.dateCreated}">PropertyValue</span></p>
+<p><span>lastUpdated</span> : <span class="ms-3" th:text="${book.lastUpdated}">PropertyValue</span></p>
+
+</body>
+</html>

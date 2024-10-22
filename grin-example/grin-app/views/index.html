@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Grin Example Project</title>
+</head>
+<body>
+<section class="bg-light p-5 text-center rounded">
+    <h1 class="mb-4">Grin Example Project</h1>
+    <p class="lead text-muted">
+        a groovy web framework.
+    </p>
+    <p class="p-5">
+        <img alt="公众号" src="/files/assets/images/me/gongzhonghao.jpg">
+    </p>
+    <p class="p-5">
+        <a class="mx-4" href="/home/hello">/home/hello</a>
+        <a class="mx-4" href="/home/ex">/home/ex</a>
+        <a class="mx-4" href="/home/param">/home/param</a>
+        <a class="mx-4" href="/home/html">/home/html</a>
+        <a class="mx-4" href="/home/mem">/home/mem</a>
+        <a class="mx-4" href="/home/nothing">/home/nothing</a>
+        <a class="mx-4" href="/pid">p id</a>
+        <a class="mx-4" href="/some-pre/hello">/some-pre/hello</a>
+        <a class="mx-4" href="/files">/files</a>
+    </p>
+</section>
+</body>
+</html>

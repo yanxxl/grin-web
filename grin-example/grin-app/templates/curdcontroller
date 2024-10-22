@@ -1,0 +1,105 @@
+${ packageName ? "package " + packageName : '' }
+
+import grin.web.Controller
+import grin.web.HttpException
+import groovy.util.logging.Slf4j
+
+/**
+ * ${simpleName}
+ * something about this controller
+ */
+@Slf4j
+class ${simpleName}Controller extends Controller {
+    def index() {
+        int limit = Math.min(Math.max(params.limit ? params.limit.toInteger() : 10, 1), 100)
+        int offset = Math.max(params.offset ? params.offset.toInteger() : 0, 0)
+        String order = params.order ?: 'id desc'
+
+        def list = ${simpleName}.list([order: order, limit: limit, offset: offset])
+        def count = ${simpleName}.count()
+
+        list.fetch()
+
+        // 分页参数计算
+        int current = offset / limit + 1
+        int pageCount = ((count % limit == 0) ? (count / limit) : (count / limit) + 1) ?: 1
+        def preLink = "?limit=\${limit}&offset=\${offset - limit}"
+        def nextLink = "?limit=\${limit}&offset=\${offset + limit}"
+
+        render('index', [list: list, count: count, pagination: [current: current, pageCount: pageCount, preLink: preLink, nextLink: nextLink]])
+    }
+
+    def show() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        ${propertyName}.fetch()
+
+        render('show', [${propertyName}: ${propertyName}])
+    }
+
+    def create() {
+        ${simpleName} ${propertyName} = ${simpleName}.from(params)
+        render('create', [${propertyName}: ${propertyName}])
+    }
+
+    def save() {
+        ${simpleName} ${propertyName} = ${simpleName}.from(params)
+        ${propertyName}.validate()
+
+        if (${propertyName}.errors) {
+            render('create', [${propertyName}: ${propertyName}])
+        } else {
+            if (${propertyName}.save()) {
+                redirect("show/\${${propertyName}.id}")
+            } else {
+                render('create', [${propertyName}: ${propertyName}])
+            }
+        }
+    }
+
+    def edit() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        render('edit', [${propertyName}: ${propertyName}])
+    }
+
+    def update() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        ${propertyName}.bind(params)
+        ${propertyName}.validate()
+
+        if (${propertyName}.errors) {
+            render('edit', [${propertyName}: ${propertyName}])
+        } else {
+            if (${propertyName}.save()) {
+                redirect("show/\${${propertyName}.id}")
+            } else {
+                render('edit', [${propertyName}: ${propertyName}])
+            }
+        }
+    }
+
+    def delete() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+        ${propertyName}.delete()
+        redirect("../index")
+    }
+}
+
+

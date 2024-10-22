@@ -1,0 +1,15 @@
+${ packageName ? "package " + packageName : '' }
+
+import groovy.util.logging.Slf4j
+import grin.web.Controller
+
+/**
+ * ${simpleName}
+ * something about this controller
+ */
+@Slf4j
+class ${simpleName}Controller extends Controller {
+    def index() {
+        render "你好,Grin !"
+    }
+}

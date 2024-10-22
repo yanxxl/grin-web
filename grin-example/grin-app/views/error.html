@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${message}">服务器出错了</title>
+</head>
+<body>
+<div class="text-center m-auto mt-5 pt-5">
+    <h1 class="display-6" th:text="${message}">服务器出错了</h1>
+</div>
+</body>
+</html>

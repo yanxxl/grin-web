@@ -1,0 +1,10 @@
+<div class="mb-3">
+    <label class="form-label" for="${propName}Id">${propName} select</label>
+    <select class="form-control" id="${propName}Id" name="${propName}Id">
+        <option value=''>请选择</option>
+        <option th:each="${propName}:\${${propName}List}" th:selected="\${${grin.cli.ClassUtils.propertyName(entityClass)}.${propName}} ? \${${propName}.id == ${grin.cli.ClassUtils.propertyName(entityClass)}.${propName}.id}"
+                th:text="\${${propName}}"
+                th:value='\${${propName}.id}'>选项 X
+        </option>
+    </select>
+</div>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>author list</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
+    <h1 class="h2">author list</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-sm btn-outline-secondary" href="create"> 新建 </a>
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <thead class="text-center">
+    <tr>
+        <th width="80px">id</th>
+        <th>content</th>
+        <th width="120px">ops</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="author:${list}">
+        <td class="text-center"><a href="#" th:href="|show/${author.id}|" th:text="${author.id}">PropertyValue</a></td>
+        <td>
+            <p><span th:text="id"></span>:<span class="ml-3" th:text="${author.id}"></span></p>
+            <p><span th:text="name"></span>:<span class="ml-3" th:text="${author.name}"></span></p>
+            <p><span th:text="createAt"></span>:<span class="ml-3" th:text="${author.createAt}"></span></p>
+
+        </td>
+        <td class="text-center">
+            <a href="#" th:href="|edit/${author.id}|">修改</a>
+            <a class="ms-3" href="#" th:href="|delete/${author.id}|">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center mt-3">
+        <li class="page-item" th:classappend="${pagination.current==1} ? 'disabled'"><a class="page-link" th:href="${pagination.preLink}">上一页</a></li>
+        <li class="page-item disabled"><span class="page-link" th:text="|${pagination.current} / ${pagination.pageCount}|">1/1</span></li>
+        <li class="page-item" th:classappend="${pagination.current>=pagination.pageCount} ? 'disabled'"><a class="page-link" th:href="${pagination.nextLink}">下一页</a></li>
+    </ul>
+</nav>
+</body>
+</html>

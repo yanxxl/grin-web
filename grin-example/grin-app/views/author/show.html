@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>show author</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1>show author</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-sm btn-outline-secondary" href="edit" th:href="|../edit/${author.id}|"> 修改 </a>
+        <a class="btn btn-sm btn-outline-secondary ms-3" href="delete" th:href="|../delete/${author.id}|"> 删除 </a>
+    </div>
+</div>
+<p><span>id</span> : <span class="ms-3" th:text="${author.id}">PropertyValue</span></p>
+<p><span>name</span> : <span class="ms-3" th:text="${author.name}">PropertyValue</span></p>
+<p><span>createAt</span> : <span class="ms-3" th:text="${author.createAt}">PropertyValue</span></p>
+
+</body>
+</html>

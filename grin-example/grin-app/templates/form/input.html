@@ -1,0 +1,11 @@
+<div class="mb-3">
+    <label class="form-label" for="${propName}">${propName}</label>
+    <%if(constraints.maxLength && constraints.maxLength>500){%>
+    <textarea aria-describedby="${propName}Help" class="form-control" id="${propName}" name="${propName}"
+              placeholder="Enter ${propName}" rows="10" th:text="\${${grin.cli.ClassUtils.propertyName(entityClass)}.${propName}}"></textarea>
+    <%}else{%>
+    <input aria-describedby="${propName}Help" class="form-control" id="${propName}" name="${propName}" placeholder="Enter ${propName}"
+           th:value="\${${grin.cli.ClassUtils.propertyName(entityClass)}.${propName}}" type="${propType}">
+    <%}%>
+    <div class="form-text" id="${propName}Help"></div>
+</div>

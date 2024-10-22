@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>show ${propertyName}</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1>show ${propertyName}</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-sm btn-outline-secondary" href="edit" th:href="|../edit/\${${propertyName}.id}|"> 修改 </a>
+        <a class="btn btn-sm btn-outline-secondary ms-3" href="delete" th:href="|../delete/\${${propertyName}.id}|"> 删除 </a>
+    </div>
+</div>
+<%
+entityClass.props.each {
+out << "<p><span>${it}</span> : <span class=\"ms-3\" th:text=\"\${${propertyName}.${it}}\">PropertyValue</span></p>\n"
+}
+%>
+</body>
+</html>

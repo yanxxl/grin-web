@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>create book</title>
+</head>
+
+<body>
+<h1>create book</h1>
+
+<th:block th:if="${book.errors.size()>0}">
+    <p th:text="${book.errors}"></p>
+</th:block>
+
+<form action="/book/save" method="post">
+    <div class="mb-3">
+        <label class="form-label" for="authorId">author select</label>
+        <select class="form-control" id="authorId" name="authorId">
+            <option value=''>请选择</option>
+            <option th:each="author:${authorList}" th:selected="${book.author} ? ${author.id == book.author.id}"
+                    th:text="${author}"
+                    th:value='${author.id}'>选项 X
+            </option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="title">title</label>
+
+        <input aria-describedby="titleHelp" class="form-control" id="title" name="title" placeholder="Enter title"
+               th:value="${book.title}" type="text">
+
+        <div class="form-text" id="titleHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="description">description</label>
+
+        <textarea aria-describedby="descriptionHelp" class="form-control" id="description" name="description"
+                  placeholder="Enter description" rows="10" th:text="${book.description}"></textarea>
+
+        <div class="form-text" id="descriptionHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="pageCount">pageCount</label>
+
+        <input aria-describedby="pageCountHelp" class="form-control" id="pageCount" name="pageCount" placeholder="Enter pageCount"
+               th:value="${book.pageCount}" type="text">
+
+        <div class="form-text" id="pageCountHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="wordCount">wordCount</label>
+
+        <input aria-describedby="wordCountHelp" class="form-control" id="wordCount" name="wordCount" placeholder="Enter wordCount"
+               th:value="${book.wordCount}" type="text">
+
+        <div class="form-text" id="wordCountHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="weight">weight</label>
+
+        <input aria-describedby="weightHelp" class="form-control" id="weight" name="weight" placeholder="Enter weight"
+               th:value="${book.weight}" type="text">
+
+        <div class="form-text" id="weightHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="weightDouble">weightDouble</label>
+
+        <input aria-describedby="weightDoubleHelp" class="form-control" id="weightDouble" name="weightDouble" placeholder="Enter weightDouble"
+               th:value="${book.weightDouble}" type="text">
+
+        <div class="form-text" id="weightDoubleHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="price">price</label>
+
+        <input aria-describedby="priceHelp" class="form-control" id="price" name="price" placeholder="Enter price"
+               th:value="${book.price}" type="text">
+
+        <div class="form-text" id="priceHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="forPeople">forPeople select</label>
+        <select class="form-control" id="forPeople" name="forPeople">
+            <option th:selected="${book.forPeople=='儿童'}" value='儿童'>儿童</option>
+            <option th:selected="${book.forPeople=='青少年'}" value='青少年'>青少年</option>
+            <option th:selected="${book.forPeople=='成年人'}" value='成年人'>成年人</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="publishAt">publishAt</label>
+
+        <input aria-describedby="publishAtHelp" class="form-control" id="publishAt" name="publishAt" placeholder="Enter publishAt"
+               th:value="${book.publishAt}" type="datetime">
+
+        <div class="form-text" id="publishAtHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="datePublished">datePublished</label>
+
+        <input aria-describedby="datePublishedHelp" class="form-control" id="datePublished" name="datePublished" placeholder="Enter datePublished"
+               th:value="${book.datePublished}" type="text">
+
+        <div class="form-text" id="datePublishedHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="timePublished">timePublished</label>
+
+        <input aria-describedby="timePublishedHelp" class="form-control" id="timePublished" name="timePublished" placeholder="Enter timePublished"
+               th:value="${book.timePublished}" type="text">
+
+        <div class="form-text" id="timePublishedHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="dateCreated">dateCreated</label>
+
+        <input aria-describedby="dateCreatedHelp" class="form-control" id="dateCreated" name="dateCreated" placeholder="Enter dateCreated"
+               th:value="${book.dateCreated}" type="text">
+
+        <div class="form-text" id="dateCreatedHelp"></div>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="lastUpdated">lastUpdated</label>
+
+        <input aria-describedby="lastUpdatedHelp" class="form-control" id="lastUpdated" name="lastUpdated" placeholder="Enter lastUpdated"
+               th:value="${book.lastUpdated}" type="text">
+
+        <div class="form-text" id="lastUpdatedHelp"></div>
+    </div>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+</body>
+</html>

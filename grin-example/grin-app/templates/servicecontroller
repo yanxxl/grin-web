@@ -1,0 +1,112 @@
+${ packageName ? "package " + packageName : '' }
+
+import grin.web.Controller
+import grin.web.HttpException
+import groovy.util.logging.Slf4j
+
+/**
+ * ${simpleName}
+ * something about this controller
+ */
+
+@Slf4j
+class ${simpleName}ServiceController extends Controller {
+    def index() {
+        params.limit = params.limit ? params.limit.toInteger() : 10
+        params.order = params.order ?: 'id desc'
+
+        def list = ${simpleName}.list(params)
+        def count = ${simpleName}.count()
+
+        list.fetch()
+
+        json([list:list.collect{it.toMap()}, count: count])
+    }
+
+    def show() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        ${propertyName}.fetch()
+
+        json(${propertyName}.toMap())
+    }
+
+    def save() {
+        ${simpleName} ${propertyName} = ${simpleName}.from(params)
+        ${propertyName}.validate()
+
+        if (${propertyName}.errors) {
+            json {
+                success false
+                message '保存失败，请检查一下数据错误'
+                errors ${propertyName}.errors
+            }
+        } else {
+            if (${propertyName}.save()) {
+                json {
+                    success true
+                    message '发布成功'
+                }
+            } else {
+                json {
+                    success false
+                    message '保存失败，请稍后再试'
+                }
+            }
+        }
+    }
+
+    def edit() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        json(${propertyName}.toMap())
+    }
+
+    def update() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+
+        if (!${propertyName}) {
+            throw new HttpException(404, "请求的内容不存在或者已删除")
+            return
+        }
+
+        ${propertyName}.bind(params)
+        ${propertyName}.validate()
+
+        if (${propertyName}.errors) {
+            json {
+                success false
+                message '保存失败，请检查一下数据错误'
+                errors ${propertyName}.errors
+            }
+        } else {
+            if (${propertyName}.save()) {
+                json {
+                    success true
+                    message '修改成功'
+                }
+            } else {
+                json {
+                    success false
+                    message '保存失败，请稍后再试'
+                }
+            }
+        }
+    }
+
+    def delete() {
+        ${simpleName} ${propertyName} = ${simpleName}.get(params.id)
+        ${propertyName}.delete()
+        json([success: true, message: '删除成功'])
+    }
+}

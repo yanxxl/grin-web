@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>book list</title>
+</head>
+
+<body>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
+    <h1 class="h2">book list</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a class="btn btn-sm btn-outline-secondary" href="create"> 新建 </a>
+    </div>
+</div>
+<table class="table table-bordered table-hover">
+    <thead class="text-center">
+    <tr>
+        <th width="80px">id</th>
+        <th>content</th>
+        <th width="120px">ops</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book:${list}">
+        <td class="text-center"><a href="#" th:href="|show/${book.id}|" th:text="${book.id}">PropertyValue</a></td>
+        <td>
+            <p><span th:text="id"></span>:<span class="ml-3" th:text="${book.id}"></span></p>
+            <p><span th:text="author"></span>:<span class="ml-3" th:text="${book.author}"></span></p>
+            <p><span th:text="title"></span>:<span class="ml-3" th:text="${book.title}"></span></p>
+            <p><span th:text="description"></span>:<span class="ml-3" th:text="${book.description}"></span></p>
+            <p><span th:text="pageCount"></span>:<span class="ml-3" th:text="${book.pageCount}"></span></p>
+            <p><span th:text="wordCount"></span>:<span class="ml-3" th:text="${book.wordCount}"></span></p>
+            <p><span th:text="weight"></span>:<span class="ml-3" th:text="${book.weight}"></span></p>
+            <p><span th:text="weightDouble"></span>:<span class="ml-3" th:text="${book.weightDouble}"></span></p>
+            <p><span th:text="price"></span>:<span class="ml-3" th:text="${book.price}"></span></p>
+            <p><span th:text="forPeople"></span>:<span class="ml-3" th:text="${book.forPeople}"></span></p>
+            <p><span th:text="publishAt"></span>:<span class="ml-3" th:text="${book.publishAt}"></span></p>
+            <p><span th:text="tags"></span>:<span class="ml-3" th:text="${book.tags}"></span></p>
+            <p><span th:text="metaData"></span>:<span class="ml-3" th:text="${book.metaData}"></span></p>
+            <p><span th:text="datePublished"></span>:<span class="ml-3" th:text="${book.datePublished}"></span></p>
+            <p><span th:text="timePublished"></span>:<span class="ml-3" th:text="${book.timePublished}"></span></p>
+            <p><span th:text="dateCreated"></span>:<span class="ml-3" th:text="${book.dateCreated}"></span></p>
+            <p><span th:text="lastUpdated"></span>:<span class="ml-3" th:text="${book.lastUpdated}"></span></p>
+
+        </td>
+        <td class="text-center">
+            <a href="#" th:href="|edit/${book.id}|">修改</a>
+            <a class="ms-3" href="#" th:href="|delete/${book.id}|">删除</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<nav aria-label="...">
+    <ul class="pagination justify-content-center mt-3">
+        <li class="page-item" th:classappend="${pagination.current==1} ? 'disabled'"><a class="page-link" th:href="${pagination.preLink}">上一页</a></li>
+        <li class="page-item disabled"><span class="page-link" th:text="|${pagination.current} / ${pagination.pageCount}|">1/1</span></li>
+        <li class="page-item" th:classappend="${pagination.current>=pagination.pageCount} ? 'disabled'"><a class="page-link" th:href="${pagination.nextLink}">下一页</a></li>
+    </ul>
+</nav>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html th:replace="~{/layouts/main :: layout(~{::head/content()}, ~{::body/content()})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>edit ${propertyName}</title>
+</head>
+
+<body>
+<h1>edit ${propertyName}</h1>
+
+<th:block th:if="\${${propertyName}.errors.size()>0}">
+    <p th:text="\${${propertyName}.errors}"></p>
+</th:block>
+
+<form action="/${propertyName}/update" method="post">
+    <input name="id" th:value="\${${propertyName}.id}" type="hidden">
+    <%
+    out << grin.cli.FormGenerator.generateForm(entityClass)
+    %>
+    <button class="btn btn-primary" type="submit">Submit</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<div class="mb-3">
+    <label class="form-label" for="${propName}">${propName} select</label>
+    <select class="form-control" id="${propName}" name="${propName}">
+        <%
+        constraints.inList.value.each {
+        out << "
+        <option th:selected=\"\${${grin.cli.ClassUtils.propertyName(entityClass)}.${propName}=='${it}'}\" value='${it}'>${it}</option>
+        "
+        }
+        %>
+    </select>
+</div>

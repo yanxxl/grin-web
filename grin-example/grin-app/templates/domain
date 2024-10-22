@@ -1,0 +1,22 @@
+${ packageName ? "package " + packageName : '' }
+
+import grin.datastore.Entity
+import static grin.datastore.validate.Validators.*
+
+/**
+ * ${simpleName}
+ */
+class ${simpleName} implements Entity< ${simpleName} > {
+    long id //can Integer,int,Long,long,String
+    String title
+    Date publishAt = new Date()
+    Date dateCreated = new Date()
+    Date lastUpdated = new Date()
+
+    static transients = []
+    static mapping = [:]
+    static constraints = [
+        title: [minLength(3), maxLength(50, '太长了'),],
+    ]
+}
+
