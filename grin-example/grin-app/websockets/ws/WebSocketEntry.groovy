@@ -3,10 +3,11 @@ package ws
 import grin.web.HttpSessionConfigurator
 import groovy.util.logging.Slf4j
 
-import javax.servlet.http.HttpSession
-import javax.websocket.*
-import javax.websocket.server.HandshakeRequest
-import javax.websocket.server.ServerEndpoint
+import jakarta.servlet.http.HttpSession
+import jakarta.websocket.*
+import jakarta.websocket.server.HandshakeRequest
+import jakarta.websocket.server.ServerEndpoint
+import jakarta.websocket.server.ServerEndpointConfig
 
 /**
  * ws.WebSocketEntry
@@ -34,5 +35,15 @@ class WebSocketEntry {
     @OnClose
     void onClose(Session session, CloseReason closeReason) {
         log.info(String.format("Session %s closed because of %s", session.getId(), closeReason))
+    }
+}
+
+/**
+ * 为 WebSocket 提供 handshake request，方便获取信息。
+ */
+class HttpSessionConfigurator extends ServerEndpointConfig.Configurator {
+    @Override
+    void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
+        sec.getUserProperties().put(HandshakeRequest.name, request)
     }
 }

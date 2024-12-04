@@ -19,8 +19,8 @@ dependencies {
     implementation project(':grin') // 如果这里报错，就注释掉，然后取消下一行的注释。这是为了方便测试 grin 而设的。
     // implementation fileTree(dir: 'libs', include: '*.jar')
     implementation 'org.codehaus.groovy:groovy-all:3.0.13'
-    implementation 'io.undertow:undertow-servlet:2.2.21.Final'
-    implementation 'io.undertow:undertow-websockets-jsr:2.2.21.Final'
+    implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.15'
+    implementation 'org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server:12.0.15'
     implementation 'org.thymeleaf:thymeleaf:3.0.15.RELEASE'
 
     implementation 'com.alibaba:druid:1.2.15'
