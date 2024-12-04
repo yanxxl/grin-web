@@ -33,7 +33,7 @@ class HomeController extends Controller {
     def html() {
         log.info("request uri: ${request.getRequestURI()}")
         html.html {
-            header {}
+            head {}
             body {
                 p("您好")
             }

@@ -22,7 +22,7 @@ environments {
     dev {
         dataSource {
             driverClassName = "org.h2.Driver"
-            url = "jdbc:h2:~/h2db/grin-example-test;MODE=PostgreSQL"
+            url = "jdbc:h2:~/h2db/grin-example-dev;MODE=PostgreSQL"
             username = "sa"
             password = ''
             initialSize = 5
