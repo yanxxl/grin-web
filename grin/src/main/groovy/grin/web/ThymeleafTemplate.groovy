@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse
 import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.WebContext
 import org.thymeleaf.templateresolver.FileTemplateResolver
+import org.thymeleaf.web.IWebExchange
+import org.thymeleaf.web.servlet.JakartaServletWebApplication
 
 
 /**
@@ -31,7 +33,8 @@ class ThymeleafTemplate {
      * @param modal
      */
     void render(HttpServletRequest request, HttpServletResponse response, String path, Map model) {
-        WebContext ctx = new WebContext(request, response, request.getServletContext(), request.getLocale())
+        IWebExchange iWebExchange = JakartaServletWebApplication.buildApplication(request.servletContext).buildExchange(request, response)
+        WebContext ctx = new WebContext(iWebExchange, request.getLocale())
         ctx.setVariables(model)
         templateEngine.process(path, ctx, response.getWriter())
     }
@@ -43,10 +46,12 @@ class ThymeleafTemplate {
      * @param modal
      */
     void render(Controller controller, String view, Map model) {
-        WebContext ctx = new WebContext(controller.request, controller.response, controller.context, controller.request.getLocale())
+        IWebExchange iWebExchange = JakartaServletWebApplication.buildApplication(controller.request.servletContext).buildExchange(controller.request, controller.response)
+        WebContext ctx = new WebContext(iWebExchange, controller.request.getLocale())
         Map map = [app    : controller.app, controllerName: controller.controllerName, actionName: controller.actionName,
                    context: controller.context, request: controller.request, response: controller.response, session: controller.session, params: controller.params]
         map.putAll(model)
+        // request 之类的变量，thymeleaf 是隐含地去用的，透明地传递过去，以备直接用。
         ctx.setVariables(map)
         String path = view.startsWith('/') ? view : "/${controller.controllerName}/${view}"
         templateEngine.process(path, ctx, controller.response.getWriter())
