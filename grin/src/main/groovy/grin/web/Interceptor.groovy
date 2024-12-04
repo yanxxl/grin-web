@@ -3,9 +3,8 @@ package grin.web
 import grin.app.GrinApplication
 import groovy.json.JsonOutput
 import groovy.util.logging.Slf4j
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import java.lang.reflect.InvocationTargetException
 
 /**

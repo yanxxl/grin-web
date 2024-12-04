@@ -2,13 +2,13 @@ package grin.web
 
 import grin.app.GrinApplication
 import groovy.util.logging.Slf4j
+import jakarta.servlet.GenericServlet
+import jakarta.servlet.ServletException
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.ServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
-import javax.servlet.GenericServlet
-import javax.servlet.ServletException
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 import java.lang.reflect.Method
 
 @Slf4j

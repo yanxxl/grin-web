@@ -1,9 +1,8 @@
 package grin.web
 
 import groovy.util.logging.Slf4j
-
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 
 /**
  * 文件处理

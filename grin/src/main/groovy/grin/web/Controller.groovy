@@ -6,13 +6,13 @@ import groovy.json.JsonSlurper
 import groovy.json.StreamingJsonBuilder
 import groovy.util.logging.Slf4j
 import groovy.xml.MarkupBuilder
+import jakarta.servlet.RequestDispatcher
+import jakarta.servlet.ServletContext
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import jakarta.servlet.http.HttpSession
 
-import javax.servlet.RequestDispatcher
-import javax.servlet.ServletContext
-import javax.servlet.ServletException
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import javax.servlet.http.HttpSession
 
 /**
  * 控制器基类

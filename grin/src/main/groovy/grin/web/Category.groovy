@@ -2,9 +2,9 @@ package grin.web
 
 import groovy.transform.CompileStatic
 
-import javax.servlet.ServletContext
-import javax.servlet.ServletRequest
-import javax.servlet.http.HttpSession
+import jakarta.servlet.ServletContext
+import jakarta.servlet.ServletRequest
+import jakarta.servlet.http.HttpSession
 
 @CompileStatic
 class Category {
