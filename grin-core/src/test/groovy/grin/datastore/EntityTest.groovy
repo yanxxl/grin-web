@@ -73,7 +73,7 @@ class EntityTest extends GroovyTestCase {
     }
 
     void testDDL() {
-        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH", user: 'sa', password: '')
         // DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
 
         // println("Tables")
@@ -88,7 +88,7 @@ class EntityTest extends GroovyTestCase {
     }
 
     void testAPI() {
-        // DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+        //  DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH", user: 'sa', password: '')
         DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
 
         // Author author = new Author()
@@ -110,7 +110,7 @@ class EntityTest extends GroovyTestCase {
     }
 
     void testUpdateChangedList() {
-        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH", user: 'sa', password: '')
 
         Author author = new Author()
         author.name = "Tom"
@@ -125,7 +125,7 @@ class EntityTest extends GroovyTestCase {
     }
 
     void testList() {
-        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH", user: 'sa', password: '')
 
         def authors = Author.list()
         authors.each { println(it.toMap()) }
