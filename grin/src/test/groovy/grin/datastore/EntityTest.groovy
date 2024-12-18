@@ -123,4 +123,11 @@ class EntityTest extends GroovyTestCase {
         author1.save()
         println(author1.toMap())
     }
+
+    void testList() {
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+
+        def authors = Author.list()
+        authors.each { println(it.toMap()) }
+    }
 }
