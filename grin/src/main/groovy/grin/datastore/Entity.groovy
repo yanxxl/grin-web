@@ -9,6 +9,18 @@ trait Entity<D> {
     static Map<String, List> constraints = [:]
 
     Map<String, String> errors = [:]
+    List<String> changedList = []
+
+
+    /**
+     * 拦截属性设置，追踪改变的属性列表
+     * @param name
+     * @param value
+     */
+    void setProperty(String name, Object value) {
+        this.@"$name" = value
+        changedList.add(name)
+    }
 
     /**
      * get

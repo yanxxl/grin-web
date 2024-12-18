@@ -2,6 +2,7 @@ package grin.datastore
 
 import com.alibaba.druid.pool.DruidDataSource
 import groovy.transform.ToString
+import org.h2.jdbcx.JdbcDataSource
 
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -56,7 +57,7 @@ class EntityTest extends GroovyTestCase {
     class Author implements Entity<Author> {
         Long id
         String name
-        // String description
+        String description
     }
 
     void testValidator() {
@@ -72,8 +73,8 @@ class EntityTest extends GroovyTestCase {
     }
 
     void testDDL() {
-        // DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
-        DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+        // DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
 
         // println("Tables")
         // DDL.tablesMetaData().each { println(it) }
@@ -106,6 +107,20 @@ class EntityTest extends GroovyTestCase {
 
         // Book book = new Book()
         Book.list([order: 'wordCount asc,id desc'])
+    }
 
+    void testUpdateChangedList() {
+        DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+
+        Author author = new Author()
+        author.name = "Tom"
+        author.description = 'somebody'
+        author.save()
+        println(author.toMap())
+
+        Author author1 = Author.get(author.id)
+        author1.name = "Jack"
+        author1.save()
+        println(author1.toMap())
     }
 }

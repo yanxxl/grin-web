@@ -26,14 +26,14 @@ class EntityImpl {
     public static final String TRANSIENTS = 'transients' // 不持久化的类属性
     public static final String CONSTRAINTS = 'constraints' // 约束
     // 系统级忽略的内容
-    public static final List<String> excludeProperties = ['metaClass', 'grin_datastore_Entity__errors']
+    public static final List<String> excludeProperties = ['metaClass', 'grin_datastore_Entity__errors', 'grin_datastore_Entity__changedList']
 
     /**
      * save
      * 插入或更新
      * @param entity
      */
-    static save(Object entity) {
+    static save(Entity entity) {
         DB.withSql { Sql sql ->
             // kvs
             Map columnMap = columnMap(entity.class)
@@ -61,6 +61,7 @@ class EntityImpl {
             String table = Utils.findTableName(entity.class)
             if (entity.hasProperty('id') && entity['id']) {
                 // to update
+                if (entity.changedList) kvs = kvs.subMap(entity.changedList) // 只更新改变的部分
                 def sets = kvs.keySet().collect { "${it} = ?" }.join(',').toString()
                 def sqlString = "update ${table} set ${sets} where id = ?".toString()
                 def params = kvs.values().toList() << entity.id
@@ -136,7 +137,7 @@ class EntityImpl {
      * @param target
      * @return
      */
-    static bindResultToEntity(GroovyRowResult result, Class target) {
+    static bindResultToEntity(GroovyRowResult result, Class<Entity> target) {
         if (!result) return null
 
         def entity = target.newInstance()
@@ -149,7 +150,7 @@ class EntityImpl {
      * @param entity
      * @return
      */
-    static bindResultToEntityInstance(GroovyRowResult result, Object entity) {
+    static bindResultToEntityInstance(GroovyRowResult result, Entity entity) {
         if (!result) return null
 
         def clasz = entity.class
@@ -196,6 +197,7 @@ class EntityImpl {
                 }
             }
         }
+        entity.changedList.clear() // 此处的绑定会影响到改变属性列表，清空一下
         return entity
     }
 
