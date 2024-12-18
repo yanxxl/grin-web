@@ -18,7 +18,7 @@ trait Entity<D> {
      * @param value
      */
     void setProperty(String name, Object value) {
-        this.@"$name" = value
+        metaClass.setProperty(this, name, value)
         changedList.add(name)
     }
 
