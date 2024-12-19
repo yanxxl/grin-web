@@ -6,8 +6,8 @@ import org.h2.jdbcx.JdbcDataSource
 import java.sql.Connection
 import java.sql.ResultSet
 
-DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
-// DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
+// DB.dataSource = new JdbcDataSource(url: "jdbc:h2:~/h2db/grin-test;MODE=PostgreSQL", user: 'sa', password: '')
+DB.dataSource = new DruidDataSource(url: "jdbc:postgresql://localhost:5432/grin_dev", username: 'postgres', password: 'pg@local')
 
 Connection connection = DB.dataSource.connection
 
