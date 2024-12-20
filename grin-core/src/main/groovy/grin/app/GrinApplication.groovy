@@ -123,6 +123,7 @@ class GrinApplication {
 
     /**
      * 获取配置
+     * Todo 支持从用户目录加载配置文件，以覆盖配置项，如数据库配置。
      * @return
      */
     ConfigObject loadConfig() {
@@ -172,10 +173,10 @@ class GrinApplication {
             dataSource.setProxyFilters([sqlLog, new StatFilter()])
         }
         DB.dataSource = dataSource
-        if (config.dbCreate == 'create-drop') DDL.dropAndCreateTables(WebUtils.loadEntities(domainsDir))
-        if (config.dbCreate == 'update') DDL.updateTables(WebUtils.loadEntities(domainsDir))
-        if (config.dbSql) DDL.executeSqlFile(new File(scriptDir, config.dbSql as String))
-        log.info("Tables：${DDL.tableColumns().keySet()}")
+        if (config.dbCreate == 'create-drop') DDL.dropAndCreate(WebUtils.loadEntities(domainsDir))
+        if (config.dbCreate == 'update') DDL.update(WebUtils.loadEntities(domainsDir))
+        if (config.dbSql) DB.executeSqlFile(new File(scriptDir, config.dbSql as String))
+        log.info("Tables：${DDL.tables().keySet()}")
     }
 
     /**

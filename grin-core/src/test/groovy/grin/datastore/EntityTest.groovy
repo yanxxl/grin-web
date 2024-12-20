@@ -1,6 +1,6 @@
 package grin.datastore
 
-import com.alibaba.druid.pool.DruidDataSource
+
 import groovy.transform.ToString
 import org.h2.jdbcx.JdbcDataSource
 
@@ -56,6 +56,7 @@ class Author implements Entity<Author> {
     Long id
     String name
     String description
+    String period
 }
 
 class EntityTest extends GroovyTestCase {
@@ -77,15 +78,10 @@ class EntityTest extends GroovyTestCase {
 
     void testDDL() {
         DB.dataSource = dataSource
-
-        // println("Tables")
-        // DDL.tablesMetaData().each { println(it) }
-        // println("Columns")
-        // DDL.columnsMetaData().each { println(it) }
-
-        DDL.dropTables([Book, Author])
-        DDL.createTables([Book, Author])
-        DDL.updateTables([Book, Author])
+        // DDL.tables().each { println(it) }
+        // DDL.drop([Book, Author])
+        // DDL.create([Book, Author])
+        // DDL.update([Book, Author])
         DDL.tables().each { println(it) }
     }
 

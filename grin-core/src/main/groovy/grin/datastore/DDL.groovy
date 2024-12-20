@@ -15,10 +15,10 @@ import java.time.LocalTime
 class DDL {
 
     /**
-     * 表信息，主要是表及其列名
+     * 数据库中的表
      * @return
      */
-    static Map<String, List<String>> tableColumns() {
+    static Map<String, List<String>> tables() {
         Connection connection = DB.dataSource.connection
         def resultSet = connection.metaData.getColumns(connection.catalog, connection.schema, null, null)
         def result = [:]
@@ -34,7 +34,96 @@ class DDL {
     }
 
     /**
-     * 实体类创建表
+     * 创建表
+     * @param entityClass
+     */
+    static create(List<Class<Entity>> entityClassList) {
+        entityClassList.each {
+            DB.executeSql(entityCreateSql(it))
+        }
+        updateForeignKey(entityClassList)
+    }
+
+    /**
+     * 删除表
+     * @param entityClassList
+     * @return
+     */
+    static drop(List<Class<Entity>> entityClassList) {
+        entityClassList.each {
+            DB.executeSql("drop table if exists ${Utils.findTableName(it)} cascade")
+        }
+    }
+
+    /**
+     * 重建表
+     * @param entityClassList
+     * @return
+     */
+    static dropAndCreate(List<Class<Entity>> entityClassList) {
+        drop(entityClassList)
+        create(entityClassList)
+    }
+
+    /**
+     * 更新表
+     * 缺少的表或者列，补齐，并不删除内容，只提醒。
+     * @param entityClassList
+     * @return
+     */
+    static update(List<Class<Entity>> entityClassList) {
+        def tables = grin.datastore.DDL.tables()
+        def existTableNames = tables.keySet() //已经存在的表
+        def targetTableNames = entityClassList.collect { Utils.findTableName(it) } // 要更新的表
+        def noUseTableNames = existTableNames - targetTableNames // 不再用的表,提醒
+        if (noUseTableNames) log.warn("多余的表 ${noUseTableNames}")
+        def newTableNames = targetTableNames - existTableNames // 新的表，创建
+        if (newTableNames) create(entityClassList.findAll { Utils.findTableName(it) in newTableNames })
+        def oldTableNames = existTableNames.intersect(targetTableNames) //旧表，更新列
+        entityClassList.findAll { Utils.findTableName(it) in oldTableNames }.each { entity ->
+            def tableName = Utils.findTableName(entity)
+            def columnsNow = tables[tableName]
+            def properties = Utils.findPropertiesToPersist(entity)
+            def columnsWill = properties.collect { Utils.findColumnName(entity, it) }
+            if (columnsNow - columnsWill) log.warn("多余的列 ${columnsNow - columnsWill}")
+            properties.each {
+                def columnName = Utils.findColumnName(entity, it)
+                if (!(columnName in columnsNow)) {
+                    DB.executeSql("alter table ${tableName} add column ${columnSql(entity, it, columnName)}")
+                }
+            }
+        }
+        updateForeignKey(entityClassList)
+    }
+
+
+    /**
+     * 更新外键
+     * 一般放到创建多个表后执行，避免依赖还没有创建的表。
+     * @param entityClassList
+     * @return
+     */
+    static updateForeignKey(List<Class<Entity>> entityClassList) {
+        Connection connection = DB.dataSource.connection
+        entityClassList.each {
+            def entity = it
+            def resultSet = connection.metaData.getImportedKeys(connection.catalog, connection.schema, Utils.findTableName(entity))
+            def columns = [] // 已经存在外键的列列表，避免重复添加。pg 重复添加会产生多个。
+            while (resultSet.next()) {
+                columns.add(resultSet.getString("FKCOLUMN_NAME"))
+            }
+            Utils.findPropertiesToPersist(entity).each {
+                def propertyType = entity.getDeclaredField(it).type
+                if (propertyType.interfaces.contains(Entity) && !columns.contains(Utils.findColumnName(entity, it))) {
+                    DB.executeSql("alter table ${Utils.findTableName(entity)} add foreign key (${Utils.findColumnName(entity, it)}) " +
+                            "references ${Utils.findTableName(propertyType)}")
+                }
+            }
+        }
+    }
+
+    /**
+     * 实体类创建表 SQL
      * @param entityClass
      * @return
      */
@@ -50,7 +139,7 @@ ${fields.collect { "        ${columnSql(entityClass, it, Utils.findColumnName(en
     }
 
     /**
-     * 列 sql
+     * 列 SQL
      * @param entityClass
      * @param propertyName
      * @param columnName
@@ -123,115 +212,4 @@ ${fields.collect { "        ${columnSql(entityClass, it, Utils.findColumnName(en
         return "${columnName} ${type} ${constraint}"
     }
 
-    /**
-     * 删除表
-     * @param entityClass
-     * @return
-     */
-    static String entityDropSql(Class<Entity> entityClass) {
-        return "drop table if exists ${Utils.findTableName(entityClass)} cascade"
-    }
-
-    /**
-     * 更新外键
-     * @param entityClassList
-     * @return
-     */
-    static updateForeignKey(List<Class<Entity>> entityClassList) {
-        Connection connection = DB.dataSource.connection
-        entityClassList.each {
-            def entity = it
-            def resultSet = connection.metaData.getImportedKeys(connection.catalog, connection.schema, Utils.findTableName(entity))
-            def columns = [] // 已经存在外键的列列表，避免重复添加。pg 重复添加会产生多个。
-            while (resultSet.next()) {
-                columns.add(resultSet.getString("FKCOLUMN_NAME"))
-            }
-            Utils.findPropertiesToPersist(entity).each {
-                def propertyType = entity.getDeclaredField(it).type
-                if (propertyType.interfaces.contains(Entity) && !columns.contains(Utils.findColumnName(entity, it))) {
-                    Utils.executeSql("alter table ${Utils.findTableName(entity)} add foreign key (${Utils.findColumnName(entity, it)}) " +
-                            "references ${Utils.findTableName(propertyType)}")
-                }
-            }
-        }
-    }
-
-    /**
-     * 表的创建与删除
-     * @param entityClass
-     */
-    static createTable(Class<Entity> entityClass) {
-        Utils.executeSql(entityCreateSql(entityClass))
-    }
-
-    static createTables(List<Class<Entity>> entityClassList) {
-        entityClassList.each {
-            Utils.executeSql(entityCreateSql(it))
-        }
-        updateForeignKey(entityClassList)
-    }
-
-    static dropTable(Class<Entity> entityClass) {
-        Utils.executeSql(entityDropSql(entityClass))
-    }
-
-    static dropTables(List<Class<Entity>> entityClassList) {
-        entityClassList.each {
-            dropTable(it)
-        }
-    }
-
-    static dropAndCreateTables(List<Class<Entity>> entityClassList) {
-        dropTables(entityClassList)
-        createTables(entityClassList)
-    }
-
-    /**
-     * 更新表
-     * 缺少的表或者列，补齐，并不删除内容，只提醒。
-     * @param entityClassList
-     * @return
-     */
-    static updateTable(Class<Entity> entity, Map<String, List<String>> tables = []) {
-        def tableName = Utils.findTableName(entity)
-        log.info("update table ${tableName}")
-        if (tables.containsKey(tableName)) {
-            def columnsNow = tables[tableName]
-            def properties = Utils.findPropertiesToPersist(entity)
-            def columnsWill = properties.collect { Utils.findColumnName(entity, it) }
-            if (columnsNow - columnsWill) log.warn("多余的列 ${columnsNow - columnsWill}")
-            properties.each {
-                def columnName = Utils.findColumnName(entity, it)
-                if (!(columnName in columnsNow)) {
-                    Utils.executeSql("alter table ${tableName} add column ${columnSql(entity, it, columnName)}")
-                }
-            }
-        } else {
-            createTable(entity)
-        }
-    }
-
-    static updateTables(List<Class<Entity>> entityClassList) {
-        def tablesMeta = tableColumns()
-        def tablesNow = tablesMeta.keySet()
-        def tablesWill = entityClassList.collect { Utils.findTableName(it) }
-        if (tablesNow - tablesWill) log.warn("多余的表 ${tablesNow - tablesWill}")
-        entityClassList.each { updateTable(it, tablesMeta) }
-        updateForeignKey(entityClassList)
-    }
-
-    /**
-     * 执行 sql 文件
-     * 有些 entity 处理不了的问题，需要用一些 sql 来解决。可通过配置，启动时自动执行一下。
-     * @param sqlFile
-     */
-    static void executeSqlFile(File sqlFile) {
-        log.info("exec sql file ${sqlFile.name}")
-        String s = sqlFile.text.trim()
-        if (s) {
-            s.split(';').each {
-                Utils.executeSql(it)
-            }
-        }
-    }
 }

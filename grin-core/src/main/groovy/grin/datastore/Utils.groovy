@@ -1,6 +1,5 @@
 package grin.datastore
 
-import groovy.sql.Sql
 
 import java.lang.reflect.Modifier
 
@@ -9,19 +8,6 @@ import java.lang.reflect.Modifier
  */
 class Utils {
     static List<String> CONSTRAINT_NAMES = ['Nullable', 'MaxLength', 'InList']
-
-    /**
-     * 执行 sql
-     * @param sqlString
-     */
-    static void executeSql(String sqlString) {
-        println("执行：\n${sqlString}")
-        def start = System.currentTimeMillis()
-        DB.withSql { Sql sql ->
-            def r = sql.execute(sqlString)
-            println("完成，${r ? '' : "影响了 ${sql.updateCount} 行，"}耗时 ${(System.currentTimeMillis() - start) / 1000000}ms")
-        }
-    }
 
     /**
      * 将属性名称编程数据库风格名称
