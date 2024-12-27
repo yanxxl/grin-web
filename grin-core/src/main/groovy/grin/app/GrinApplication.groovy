@@ -123,13 +123,19 @@ class GrinApplication {
 
     /**
      * 获取配置
-     * Todo 支持从用户目录加载配置文件，以覆盖配置项，如数据库配置。
+     * 支持从用户目录加载配置文件 grin-app.properties ，以覆盖配置项，如数据库配置。
      * @return
      */
     ConfigObject loadConfig() {
         def configFile = new File(configDir, 'config.groovy')
         if (configFile.exists()) {
-            return new ConfigSlurper(environment).parse(configFile.text)
+            def result = new ConfigSlurper(environment).parse(configFile.text)
+            def userConfigFile = new File(System.getProperty('user.home'), 'grin-app.properties')
+            if (userConfigFile.exists()) {
+                log.info("发现用户目录存在配置文件 grin-app.properties，加载中...")
+                result.merge(new ConfigSlurper().parse(userConfigFile.toURI().toURL()))
+            }
+            return result
         } else {
             throw new Exception("配置文件不存在")
         }
