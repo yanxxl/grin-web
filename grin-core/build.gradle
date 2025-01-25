@@ -2,10 +2,8 @@ plugins {
     id 'groovy'
 }
 
-group 'xyz.itbang'
+group 'com.github.yanxxl'
 version "${new Date().format('yyyyMMddHHmm')}"
-
-sourceCompatibility = 1.8
 
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public' }
@@ -13,25 +11,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.codehaus.groovy:groovy-all:3.0.13'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.23'
+    implementation 'jakarta.servlet:jakarta.servlet-api:6.0.0'
     implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
-
-    implementation 'org.postgresql:postgresql:42.7.2'
     implementation 'com.alibaba:druid:1.2.15'
-
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
     runtimeOnly 'org.slf4j:slf4j-api:2.0.16'
     runtimeOnly 'ch.qos.logback:logback-classic:1.4.12'
+    runtimeOnly 'org.postgresql:postgresql:42.7.2'
 
     testImplementation 'com.h2database:h2:2.2.220'
     testImplementation 'junit:junit:4.13.2'
 }
 
-
+// 打包源码
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allSource
-    exclude('logback.groovy')
 }
 assemble.dependsOn sourcesJar

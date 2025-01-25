@@ -4,10 +4,9 @@ plugins {
     id 'com.gradleup.shadow' version '8.3.0'
 }
 
-group 'xyz.itbang'
+group 'com.github.yanxxl'
 version '0.1'
 
-sourceCompatibility = 1.8
 mainClassName = "Application"
 
 repositories {
@@ -18,13 +17,13 @@ repositories {
 dependencies {
     implementation project(':grin-core') // 如果这里报错，就注释掉，然后取消下一行的注释。这是为了方便测试 grin 而设的。
     // implementation fileTree(dir: 'libs', include: '*.jar')
-    implementation 'org.codehaus.groovy:groovy-all:3.0.13'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.23'
     implementation 'org.eclipse.jetty.ee10:jetty-ee10-servlet:12.0.15'
     implementation 'org.eclipse.jetty.ee10.websocket:jetty-ee10-websocket-jakarta-server:12.0.15'
     implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
 
     implementation 'com.alibaba:druid:1.2.15'
-    implementation 'com.zaxxer:HikariCP:5.0.1'
+    // implementation 'com.zaxxer:HikariCP:5.0.1'
 
     runtimeOnly 'org.postgresql:postgresql:42.7.2'
     runtimeOnly 'com.h2database:h2:2.2.220'
@@ -61,27 +60,19 @@ task grin(type: JavaExec) {
     mainClass = 'grin.cli.GrinMain'
 }
 
-// 部署运行准备，把编译后的文件，放到特定文件夹下
-task prepare(type: Copy) {
-    group 'grin'
-    dependsOn classes
-    into "$buildDir/grin"
-    from sourceSets.main.runtimeClasspath
-}
-
-// 复制 grin 框架类库过来
-task copyLibs(type: Copy) {
-    group 'grin'
-    from '/Users/yan/projects/grin-dev/grin/build/libs/'
-    into "libs"
-}
-
 // 打包可执行 Jar 文件
+def jarName = "grin-example-${new Date().format('yyyyMMddHHmm')}.jar"
 shadowJar {
+    archiveFileName = jarName
     // 将 grin-app 下的内容打包到 jar。
     // Jar 里的方法都有些诡异，不是直觉上的对文件夹的操作，而是对内部文件的处理。
     into('grin-app') {
         from('grin-app')
     }
+}
+
+// 部署
+task deploy {
+    // println(jarName)
 }
 // --- grin ---
