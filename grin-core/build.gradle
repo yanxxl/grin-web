@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.github.yanxxl'
-version "${new Date().format('yyyyMMddHHmm')}"
+version "${new Date().format('yyyy.MM.dd.HHmm')}"
 
 repositories {
     maven { url 'https://maven.aliyun.com/repository/public' }

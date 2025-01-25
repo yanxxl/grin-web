@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'com.github.yanxxl'
-version '0.1'
+version "${new Date().format('yyyy.MM.dd.HHmm')}"
 
 mainClassName = "Application"
 
@@ -61,11 +61,8 @@ task grin(type: JavaExec) {
 }
 
 // 打包可执行 Jar 文件
-def jarName = "grin-example-${new Date().format('yyyyMMddHHmm')}.jar"
 shadowJar {
-    archiveFileName = jarName
     // 将 grin-app 下的内容打包到 jar。
-    // Jar 里的方法都有些诡异，不是直觉上的对文件夹的操作，而是对内部文件的处理。
     into('grin-app') {
         from('grin-app')
     }
