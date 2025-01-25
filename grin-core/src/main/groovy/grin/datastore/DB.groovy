@@ -66,4 +66,15 @@ class DB {
             println("完成，${r ? '' : "影响了 ${sql.updateCount} 行，"}耗时 ${(System.currentTimeMillis() - start) / 1000000}ms")
         }
     }
+
+    /**
+     * 显示数据库信息
+     */
+    static void dbInfo() {
+        withSql { Sql sql ->
+            def meta = sql.dataSource.connection.metaData
+            log.info("Database: ${meta.databaseProductName} - ${meta.databaseProductVersion}")
+            log.info("Driver: ${meta.driverName} - ${meta.driverVersion}")
+        }
+    }
 }

@@ -179,6 +179,7 @@ class GrinApplication {
             dataSource.setProxyFilters([sqlLog, new StatFilter()])
         }
         DB.dataSource = dataSource
+        DB.dbInfo()
         if (config.dbCreate == 'create-drop') DDL.dropAndCreate(WebUtils.loadEntities(domainsDir))
         if (config.dbCreate == 'update') DDL.update(WebUtils.loadEntities(domainsDir))
         if (config.dbSql) DB.executeSqlFile(new File(scriptDir, config.dbSql as String))
