@@ -2,6 +2,7 @@ plugins {
     id 'groovy'
     id 'application'
     id 'com.gradleup.shadow' version '8.3.0'
+    id 'org.hidetake.ssh' version '2.11.2'
 }
 
 group 'com.github.yanxxl'
@@ -69,7 +70,28 @@ shadowJar {
 }
 
 // 部署
+remotes {
+    example {
+        host = 'example'
+        user = 'root'
+        identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+    }
+}
+
 task deploy {
-    // println(jarName)
+    doLast {
+        ssh.run {
+            def jars = new File("${projectDir}/build/libs").listFiles()
+            if (!jars) throw new Exception("不存在部署文件")
+            if (jars.size() > 1) throw new Exception("部署文件多于一个，请检查")
+            def jar = jars[0]
+
+            session(remotes.thinking) {
+                // put from: jar, into: "${jar.name}"
+                // execute "ps -ef"
+                // execute "java -jar ${jar.name}"
+            }
+        }
+    }
 }
 // --- grin ---
