@@ -94,7 +94,7 @@ trait Entity<D> {
 
     /**
      * where 自定义条件查询
-     * @param sql
+     * @param sql 纯 SQL 语句，注意列名。
      */
     static EntityImpl.Where<D> where(String sql, List params = []) {
         new EntityImpl.Where(whereSql: sql, params: params ?: [], entityClass: this)
