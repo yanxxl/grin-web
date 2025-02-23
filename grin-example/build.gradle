@@ -29,7 +29,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql:42.7.2'
     runtimeOnly 'com.h2database:h2:2.2.220'
     runtimeOnly 'org.slf4j:slf4j-api:2.0.16'
-    runtimeOnly 'ch.qos.logback:logback-classic:1.4.12' // 这个暂时不能升级，更新版本就是高于 jdk8 编译了。
+    runtimeOnly 'ch.qos.logback:logback-classic:1.4.12'
 
     testImplementation 'junit:junit:4.13.2'
 }
@@ -89,7 +89,7 @@ task deploy {
             session(remotes.thinking) {
                 // put from: jar, into: "${jar.name}"
                 // execute "ps -ef"
-                // execute "java -jar ${jar.name}"
+                // executeScript "nohup java -jar ${jar.name}"
             }
         }
     }
