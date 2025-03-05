@@ -104,7 +104,7 @@ trait Entity<D> {
         where(sql, params.toList())
     }
 
-    static EntityImpl.Where<D> where(Map kvs) {
+    static EntityImpl.Where<D> where(Map kvs, boolean or = false) {
         def params = []
         def sql = kvs.keySet()
                 .collect {
@@ -118,7 +118,7 @@ trait Entity<D> {
                         return "${Utils.findColumnName(this, it)} = ?"
                     }
                 }
-                .join(' and ')
+                .join(or ? ' or ' : ' and ')
         where(sql, params)
     }
 
